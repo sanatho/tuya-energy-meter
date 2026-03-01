@@ -1,0 +1,9 @@
+MQTT_BROKER = "192.168.1.100"  # IP del broker Mosquitto su Home Assistant
+MQTT_PORT = 1883
+MQTT_KEEP_ALIVE = 60
+MQTT_TOPIC_POWER = "home/energy/power"
+MQTT_TOPIC_VOLTAGE = "home/energy/voltage"
+MQTT_TOPIC_CURRENT = "home/energy/current"
+MQTT_TOPIC_ENERGY = "home/energy/total_energy"
+MQTT_TOPIC_COMPLETE = "home/energy/"
+POLL_INTERVAL = 10

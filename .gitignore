@@ -1,0 +1,11 @@
+# Created by venv; see https://docs.python.org/3/library/venv.html
+bin/*
+include/*
+lib/*
+mosquitto/data/*
+mosquitto/logs/*
+__pycache__/*
+main___old
+pyvenv.cfg
+secret.py
+.DS_Store

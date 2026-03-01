@@ -1,0 +1,3 @@
+paho-mqtt
+tuya-iot-py-sdk
+tinytuya
