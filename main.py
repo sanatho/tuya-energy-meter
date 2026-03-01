@@ -8,16 +8,20 @@ from secret import DEVICE_ID, DEVICE_IP, LOCAL_KEY
 from settings import POLL_INTERVAL
 
 def parse_data(data):
+    """
+    Parse raw data from tinytuya
+    :param data: Raw data from tinytuya
+    :return: Energy meter object
+    """
+    
     energy_meter = EnegeryMeter(data)
     return energy_meter
 
-# Crea oggetto device
 d = tinytuya.OutletDevice(DEVICE_ID, DEVICE_IP, LOCAL_KEY)
 d.set_version(3.5)  # o 3.1, controlla tuya-cli
 
-# Leggi stato
 while True:
-    data = d.status()  # restituisce dict con i datapoint locali
+    data = d.status()
     energy_meter = parse_data(data['dps'])
     print(energy_meter)
     mqtt_client = MqttClient()

@@ -6,6 +6,10 @@ from settings import MQTT_KEEP_ALIVE, MQTT_BROKER, MQTT_PORT, MQTT_TOPIC_CURRENT
 
 class MqttClient:
     def __init__(self):
+        """
+        Constructor for mqtt client
+        """
+        
         self.port = MQTT_PORT
         self.address = MQTT_BROKER
         self.keep_alive = MQTT_KEEP_ALIVE
@@ -18,20 +22,18 @@ class MqttClient:
     
     def send(self, energy_meter):
         """
-        Pubblica i dati di un energy meter su MQTT con auto discovery per Home Assistant.
-        Crea le configurazioni se necessario (retain=True) e pubblica i valori (state_topic).
+        Send data for auto-discovery in home-assistant
+        :param energy_meter: Energy meter object
         """
 
-        # Device unico
         device_info = {
             "identifiers": ["energy_meter_1"],
             "name": "Energy Meter",
             "manufacturer": "Tuya",
             "model": "Clamp Meter",
-            "configuration_url": "http://PLACEHOLDER-URL"  # sostituire con URL reale se disponibile
+            "configuration_url": "https://github.com/sanatho/tuya-energy-meter"
         }
 
-        # Configurazioni per auto discovery
         configs = [
             {
                 "topic": "homeassistant/sensor/energy_meter_voltage/config",
@@ -68,11 +70,9 @@ class MqttClient:
             }
         ]
 
-        # Pubblica i config (retain=True)
         for cfg in configs:
             self.client.publish(cfg["topic"], json.dumps(cfg["payload"]), retain=True)
 
-        # Pubblica i valori correnti (state_topic)
         self.client.publish("home/energy_meter/voltage", str(energy_meter.voltage))
         self.client.publish("home/energy_meter/current", str(energy_meter.current))
         self.client.publish("home/energy_meter/power", str(energy_meter.power))
