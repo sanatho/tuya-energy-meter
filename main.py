@@ -52,7 +52,7 @@ mqtt_client = MqttClient()
 last_run = 0
 
 while True:
-    now = time.time()
+    now = time()
     data = d.status()
     energy_meter = parse_data(data['dps'])
     mqtt_client.send(energy_meter)
