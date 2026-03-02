@@ -12,8 +12,7 @@ services:
     restart: unless-stopped
 
   energy_meter:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: ./
+    image: tuya-energy-meter
     restart: unless-stopped
     network_mode: host
