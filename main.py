@@ -1,14 +1,13 @@
 import json
-import os
-from time import sleep
+from time import sleep, time
 import subprocess
 
 import tinytuya
 
 from energy_meter import EnegeryMeter
 from mqtt_client import MqttClient
-from secret import DEVICE_ID, DEVICE_IP, LOCAL_KEY
-from settings import POLL_INTERVAL
+from secret import DEVICE_ID, LOCAL_KEY
+from settings import AUTODISCOVERY_INTERVALS, POLL_INTERVAL
 
 def parse_data(data):
     """
@@ -16,7 +15,6 @@ def parse_data(data):
     :param data: Raw data from tinytuya
     :return: Energy meter object
     """
-    
     energy_meter = EnegeryMeter(data)
     return energy_meter
 
@@ -47,14 +45,23 @@ def retrive_ip_address(device_id):
     return ip
 
 
-ip_adress = retrive_ip_address(DEVICE_ID)
-d = tinytuya.OutletDevice(DEVICE_ID, ip_adress, LOCAL_KEY)
+ip_address = retrive_ip_address(DEVICE_ID)
+d = tinytuya.OutletDevice(DEVICE_ID, ip_address, LOCAL_KEY)
 d.set_version(3.5)  # o 3.1, controlla tuya-cli
+mqtt_client = MqttClient()
+last_run = 0
 
 while True:
+    now = time.time()
     data = d.status()
     energy_meter = parse_data(data['dps'])
-    print(energy_meter)
-    mqtt_client = MqttClient()
     mqtt_client.send(energy_meter)
+
+    # run the extra function every 30 minutes
+    if now - last_run >= AUTODISCOVERY_INTERVALS * 60:
+        ip_address = retrive_ip_address(DEVICE_ID)
+        d = tinytuya.OutletDevice(DEVICE_ID, ip_address, LOCAL_KEY)
+        last_run = now  # reset timer
+
+    print(energy_meter)
     sleep(POLL_INTERVAL)

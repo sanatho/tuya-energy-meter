@@ -9,3 +9,4 @@ main___old
 pyvenv.cfg
 secret.py
 .DS_Store
+snapshot.json

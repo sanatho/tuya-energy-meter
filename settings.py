@@ -7,3 +7,4 @@ MQTT_TOPIC_CURRENT = "home/energy/current"
 MQTT_TOPIC_ENERGY = "home/energy/total_energy"
 MQTT_TOPIC_COMPLETE = "home/energy/"
 POLL_INTERVAL = 10
+AUTODISCOVERY_INTERVALS = 10 # in minutes
