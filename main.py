@@ -35,7 +35,7 @@ def get_ip_by_device_id(json_data, device_id):
 
 
 def retrive_ip_address(device_id):
-    subprocess.run(['python', '-m', 'tinytuya', 'scan'])
+    subprocess.run(['python3', '-m', 'tinytuya', 'scan'])
 
     with open('snapshot.json', 'r') as f:
         data = json.load(f)
@@ -44,24 +44,25 @@ def retrive_ip_address(device_id):
 
     return ip
 
-
-ip_address = retrive_ip_address(DEVICE_ID)
-d = tinytuya.OutletDevice(DEVICE_ID, ip_address, LOCAL_KEY)
-d.set_version(3.5)  # o 3.1, controlla tuya-cli
 mqtt_client = MqttClient()
 last_run = 0
 
 while True:
+    ip_address = retrive_ip_address(DEVICE_ID)
+    d = tinytuya.OutletDevice(DEVICE_ID, ip_address, LOCAL_KEY)
+    d.set_version(3.1)  # o 3.1, controlla tuya-cli
     now = time()
-    data = d.status()
-    energy_meter = parse_data(data['dps'])
-    mqtt_client.send(energy_meter)
 
     # run the extra function every 30 minutes
     if now - last_run >= AUTODISCOVERY_INTERVALS * 60:
         ip_address = retrive_ip_address(DEVICE_ID)
         d = tinytuya.OutletDevice(DEVICE_ID, ip_address, LOCAL_KEY)
         last_run = now  # reset timer
+
+    data = d.status()
+    print(data)
+    energy_meter = parse_data(data['dps'])
+    mqtt_client.send(energy_meter)
 
     print(energy_meter)
     sleep(POLL_INTERVAL)
